@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Button Counter</title>
+    <style>
+      body {
+        padding: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+      #counter {
+        margin-top: 20px;
+        font-size: 24px;
+      }
+      #message {
+        margin-top: 10px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="clickButton">クリック</button>
+    <div id="counter">クリック回数: 0</div>
+    <div id="message"></div>
+
+    <script type="text/javascript">
+      const { ipcRenderer } = require("electron");
+
+      let count = 0;
+      const button = document.getElementById("clickButton");
+      const counter = document.getElementById("counter");
+      const messageDiv = document.getElementById("message");
+
+      button.addEventListener("click", async () => {
+        count++;
+        // メインプロセスにメッセージを送信
+        const result = await ipcRenderer.invoke("button-click", count);
+        counter.textContent = `クリック回数: ${result.count}`;
+        messageDiv.textContent = result.message;
+      });
+    </script>
+  </body>
+</html>
